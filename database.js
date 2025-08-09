@@ -1,8 +1,6 @@
-import Database from 'better-sqlite3'
-const db = new Database('foobar.db')
-
-db.pragma('journal_mode = WAL')
-
+import Database from 'better-sqlite3';
+const db = new Database('foobar.db');
+db.pragma('journal_mode = WAL');
 db.exec(`
 CREATE TABLE IF NOT EXISTS history  (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -15,6 +13,5 @@ CREATE TABLE IF NOT EXISTS history  (
   FOREIGN KEY (user1_id) REFERENCES users (id)
   FOREIGN KEY (user2_id) REFERENCES users (id)
 )
-`)
-
-export default db
+`);
+export default db;

@@ -1,4 +1,4 @@
-import { WebSocketServer, WebSocket, CLOSING } from 'ws'
+import { WebSocketServer, WebSocket } from 'ws'
 import { v4 as uuidv4 } from 'uuid'
 import createAnimalName from './generateName.js'
 import db from './database.js'
@@ -81,7 +81,8 @@ wss.on('connection', async function connection(socket) {
           websocketId: uuid,
         })
 
-      // case: 'exitTheGame':
+      case 'leaveGame':
+        return leaveGame(data.user, data.room)
 
       default:
         return sendMessageInCurrentRoom(data.room, { message: 'wtf' })
@@ -97,6 +98,7 @@ wss.on('connection', async function connection(socket) {
 })
 
 // ----------------------------------------------------------------------------
+
 // +
 function broadcastMessage(data: object) {
   wss.clients.forEach(client => sendMessage(client, data))
@@ -122,6 +124,13 @@ function sendMessage(socket: WebSocket, message: object) {
 }
 
 // ----------------------------------------------------------------------------
+
+function leaveGame(user: User, roomId: string) {
+  sendMessageExpectSender(roomId, user, {
+    type: 'leaveGame',
+    message: `Пользовоатель ${user.userName} вышел`,
+  })
+}
 
 function createUser(uuid: string, socket: WebSocket) {
   const userName = createAnimalName()
